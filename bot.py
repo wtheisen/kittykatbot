@@ -7,6 +7,10 @@ import yaml
 
 from irc import IRC
 
+'''
+todo: $motivation or $pickmeup
+'''
+
 def parse_yaml(filename):
   with open(filename, 'r') as stream:
     return dict(yaml.load(stream))
@@ -23,7 +27,7 @@ def handle_message(text):
   handle_keywords(user, message, channel)
   
   if message[0] == "$":
-    handle_commands(message[1:], channel, sayings)
+    handle_commands(user, message[1:], channel, sayings)
 
 def handle_keywords(user, text, channel):
   keywords = ["bork", "sbrk", "fark", "womp"]
@@ -38,7 +42,7 @@ def handle_keywords(user, text, channel):
   if "deprecat" in text and user != "trogdorthedagron":
     irc.send(channel, "we do not self.deprecate() here friends")
 
-def handle_commands(text, channel, sayings):
+def handle_commands(user, text, channel, sayings):
   args = text.split()
   command = args.pop(0)
 
@@ -57,6 +61,12 @@ def handle_commands(text, channel, sayings):
     else:
       index = random.randrange(len(sayings[name]))
       irc.send(channel, "{}, {}".format(name, sayings[name][index]))
+
+  if command == "motivation":
+    name = args[0] if len(args) else user
+    index = random.randrange(len(sayings[command]))
+    irc.send(channel, "{}, {}".format(name, sayings[command][index]))
+    
 
 if __name__ == "__main__":
   channel = "#ndlug"
