@@ -7,13 +7,12 @@ import yaml
 
 from irc import IRC
 
-'''
-todo: $motivation or $pickmeup
-'''
-
 def parse_yaml(filename):
-  with open(filename, 'r') as stream:
-    return dict(yaml.load(stream))
+  try:
+    with open(filename, 'r') as stream:
+      return dict(yaml.load(stream))
+  except:
+    return {}
 
 def handle_message(text):
   try:
@@ -62,12 +61,11 @@ def handle_commands(user, text, channel, sayings):
       index = random.randrange(len(sayings[name]))
       irc.send(channel, "{}, {}".format(name, sayings[name][index]))
 
-  if command == "motivation":
+  if command == "motivation" or command == "catjoke":
     name = args[0] if len(args) else user
     index = random.randrange(len(sayings[command]))
     irc.send(channel, "{}, {}".format(name, sayings[command][index]))
     
-
 if __name__ == "__main__":
   channel = "#ndlug"
   server = "irc.snoonet.org"
@@ -85,7 +83,6 @@ if __name__ == "__main__":
   irc.send("trogdorthedagron", "is this thing on")
 
   sayings = parse_yaml("whois.yaml")
-
 
   while True:
     text = irc.recieve()
