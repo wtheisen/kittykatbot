@@ -65,9 +65,16 @@ def handle_commands(user, text, channel, sayings):
     name = args[0] if len(args) else user
     index = random.randrange(len(sayings[command]))
     irc.send(channel, "{}, {}".format(name, sayings[command][index]))
-    
+
+  if command == "claw":
+    target = args[0] if len(args) else user
+    source = user if len(args) else "kittykatbot"
+    index = random.randrange(len(sayings[command]))
+
+    irc.send(channel, sayings[command][index].format(source, target))
+
 if __name__ == "__main__":
-  channel = "#ndlug"
+  channel = "##sandbox"
   server = "irc.snoonet.org"
   nick = "kittykatbot"
 
@@ -83,6 +90,9 @@ if __name__ == "__main__":
   irc.send("trogdorthedagron", "is this thing on")
 
   sayings = parse_yaml("whois.yaml")
+  print "\n\n\n\n\nSAYINGS"
+  print sayings
+
 
   while True:
     text = irc.recieve()
