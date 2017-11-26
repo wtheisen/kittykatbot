@@ -46,20 +46,26 @@ def handle_commands(user, text, channel, sayings):
   command = args.pop(0)
 
   if command == "whois":
+    # handle name redirection
     name = args[0]
+    if name in sayings and sayings[name][0] in sayings:
+      key = sayings[name][0]
+    else:
+      key = name
+
     flag = filter(lambda x: x[0] == '-', args)
 
-    if name not in sayings:
+    if key not in sayings:
       irc.send(channel, "I just haven't met them yet")
       return
 
     if "-a" in flag:
-      to_send = ["{}, {}".format(name, s) for s in sayings[name]]
+      to_send = ["{}, {}".format(name, s) for s in sayings[key]]
       for msg in to_send:
         irc.send(channel, msg)
     else:
-      index = random.randrange(len(sayings[name]))
-      irc.send(channel, "{}, {}".format(name, sayings[name][index]))
+      index = random.randrange(len(sayings[key]))
+      irc.send(channel, "{}, {}".format(name, sayings[key][index]))
 
   if command == "motivation" or command == "catjoke":
     name = args[0] if len(args) else user
@@ -74,7 +80,7 @@ def handle_commands(user, text, channel, sayings):
     irc.send(channel, sayings[command][index].format(source, target))
 
 if __name__ == "__main__":
-  channel = "#ndlug"
+  channel = "##sandbox"
   server = "irc.snoonet.org"
   nick = "kittykatbot"
 
