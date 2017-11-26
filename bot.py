@@ -74,7 +74,7 @@ def handle_commands(user, text, channel, sayings):
     irc.send(channel, sayings[command][index].format(source, target))
 
 if __name__ == "__main__":
-  channel = "##sandbox"
+  channel = "#ndlug"
   server = "irc.snoonet.org"
   nick = "kittykatbot"
 
@@ -90,9 +90,6 @@ if __name__ == "__main__":
   irc.send("trogdorthedagron", "is this thing on")
 
   sayings = parse_yaml("whois.yaml")
-  print "\n\n\n\n\nSAYINGS"
-  print sayings
-
 
   while True:
     text = irc.recieve()
