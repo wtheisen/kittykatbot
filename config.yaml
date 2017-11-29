@@ -1,0 +1,14 @@
+channels:
+  - '#ndlug'
+
+server:
+  - 'irc.snoonet.org'
+
+nick:
+  - 'kittykatbot'
+
+test:
+  - '##sandbox'
+
+test_server:
+  - 'irc.snoonet.org'
