@@ -1,17 +1,17 @@
 ## kittykatbot: a (very) simple IRC bot
 
 kittykatbot supports the following commands:
-* `motivation [user]`: provides a random sentence of motivation to the
+* `$motivation [user]`: provides a random sentence of motivation to the
   specified user.
-* `claw [user]`: will provide a random sentence in which you 'claw' the user.
+* `$claw [user]`: will provide a random sentence in which you 'claw' the user.
   kittykatbot is a cat, these things are totally normal.
-* `catjoke [user]`: will provide a random cat joke to the user.
+* `$catjoke [user]`: will provide a random cat joke to the user.
 
 Note: For all of the above commands, `kittykatbot` will say the command at you
 if no user is specified. All command strings are specified in `commands.yaml`.
 
 If a `whois.yaml` file is provided:
-* `whois <name> [-a]`: returns a random sentence (or all sentences if `-a`
+* `$whois <name> [-a]`: returns a random sentence (or all sentences if `-a`
   specified) about that user.
 * My whois file is top sekrit, so you'll have to
   provide your own.
