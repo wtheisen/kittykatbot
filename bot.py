@@ -45,7 +45,7 @@ def parse_config(config):
   return channels, servers, nicks
 
 
-def handle_message(irc, text, sayings):
+def handle_message(irc, text):
   try:
     msg_info = text[1:].split()
     user = msg_info[0].split("!")[0]
@@ -58,35 +58,36 @@ def handle_message(irc, text, sayings):
   
   if message.startswith('$'):
     if message.startswith('$whois'):
-      handle_whois(irc, channel, message, sayings)
+      handle_whois(irc, channel, message)
 
     else:
-      handle_commands(user, message[1:], channel, sayings)
+      handle_commands(user, message[1:], channel)
 
-def handle_whois(irc, channel, text, sayings):
+def handle_whois(irc, channel, text):
+  whois = parse_yaml("whois.yaml")
   args = text.split()
   command = args.pop(0)
 
   # handle name redirection
   name = args[0]
-  if name in sayings and sayings[name][0] in sayings:
-    key = sayings[name][0]
+  if name in whois and whois[name][0] in whois:
+    key = whois[name][0]
   else:
     key = name
 
   flag = filter(lambda x: x[0] == '-', args)
 
-  if key not in sayings:
+  if key not in whois:
     irc.send(channel, "I just haven't met them yet")
     return
 
   if "-a" in flag:
-    to_send = ["{}, {}".format(name, s) for s in sayings[key]]
+    to_send = ["{}, {}".format(name, s) for s in whois[key]]
     for msg in to_send:
       irc.send(channel, msg)
   else:
-    index = random.randrange(len(sayings[key]))
-    irc.send(channel, "{}, {}".format(name, sayings[key][index]))
+    index = random.randrange(len(whois[key]))
+    irc.send(channel, "{}, {}".format(name, whois[key][index]))
 
 def handle_keywords(user, text, channel):
   keywords = ["bork", "sbrk", "fark", "womp"]
@@ -101,21 +102,22 @@ def handle_keywords(user, text, channel):
   if "deprecat" in text and user != "trogdorthedagron":
     irc.send(channel, "we do not self.deprecate() here friends")
 
-def handle_commands(user, text, channel, sayings):
+def handle_commands(user, text, channel):
+  commands = parse_yaml("commands.yaml")
   args = text.split()
   command = args.pop(0)
 
   if command == "motivation" or command == "catjoke":
     name = args[0] if len(args) else user
-    index = random.randrange(len(sayings[command]))
-    irc.send(channel, "{}, {}".format(name, sayings[command][index]))
+    index = random.randrange(len(commands[command]))
+    irc.send(channel, "{}, {}".format(name, commands[command][index]))
 
   if command == "claw":
     target = args[0] if len(args) else user
     source = user if len(args) else "kittykatbot"
-    index = random.randrange(len(sayings[command]))
+    index = random.randrange(len(commands[command]))
 
-    irc.send(channel, sayings[command][index].format(source, target))
+    irc.send(channel, commands[command][index].format(source, target))
 
 if __name__ == "__main__":
   config = parse_yaml('config.yaml')
@@ -133,7 +135,6 @@ if __name__ == "__main__":
     irc.join(channel)
 
   irc.send("trogdorthedagron", "is this thing on")
-  sayings = parse_yaml("whois.yaml")
 
   while True:
     text = irc.recieve()
@@ -142,4 +143,4 @@ if __name__ == "__main__":
       print text.strip()
 
     if "PRIVMSG" in text:
-      handle_message(irc, text, sayings) 
+      handle_message(irc, text) 
