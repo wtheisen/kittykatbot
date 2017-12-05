@@ -90,10 +90,11 @@ def handle_whois(irc, channel, text):
     irc.send(channel, "{}, {}".format(name, whois[key][index]))
 
 def handle_keywords(user, text, channel):
+  text = text.lower()
   keywords = ["bork", "sbrk", "fark", "womp"]
 
   for word in keywords:
-    if word in text.lower():
+    if word in text:
       irc.send(channel, "{} {}".format(word, word))
 
   if "hot" in text and "hott" not in text and user != "gonzobot":
@@ -101,6 +102,12 @@ def handle_keywords(user, text, channel):
 
   if "deprecat" in text:
     irc.send(channel, "we do not self.deprecate() here friends")
+
+  if "herp" in text and "derp" not in text:
+    irc.send(channel, "derp")
+
+  if "derp" in text and "herp" not in text:
+    irc.send(channel, "herp derp")
 
 def handle_commands(user, text, channel):
   commands = parse_yaml("commands.yaml")
@@ -112,7 +119,7 @@ def handle_commands(user, text, channel):
     index = random.randrange(len(commands[command]))
     irc.send(channel, "{}, {}".format(name, commands[command][index]))
 
-  if command == "claw" or command == "cuddle":
+  if command in ["claw", "cuddle"]:
     target = args[0] if len(args) else user
     source = user if len(args) else "kittykatbot"
     index = random.randrange(len(commands[command]))
