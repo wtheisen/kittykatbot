@@ -112,7 +112,7 @@ def handle_commands(user, text, channel):
     index = random.randrange(len(commands[command]))
     irc.send(channel, "{}, {}".format(name, commands[command][index]))
 
-  if command == "claw":
+  if command == "claw" or command == "cuddle":
     target = args[0] if len(args) else user
     source = user if len(args) else "kittykatbot"
     index = random.randrange(len(commands[command]))

@@ -28,3 +28,9 @@ claw:
   - "{} vengefully claws {}"                                          
   - "{} thinks about clawing {}, but decides it's not worth the battle"
   - "{} is beneath clawing {}"
+
+cuddle:
+  - "{} jumps up into {}'s lap and falls asleep there"
+  - "{} sits at the feet of {} and meows, waits to be luffed"
+  - "{} finds a nice warm spot on {}'s keyboard and lays there"
+  - "{} sits right next to {} and purrs happily"
