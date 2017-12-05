@@ -99,7 +99,7 @@ def handle_keywords(user, text, channel):
   if "hot" in text and "hott" not in text and user != "gonzobot":
     irc.send(channel, "s/hot/hott/")
 
-  if "deprecat" in text and user != "trogdorthedagron":
+  if "deprecat" in text:
     irc.send(channel, "we do not self.deprecate() here friends")
 
 def handle_commands(user, text, channel):
