@@ -50,7 +50,7 @@ def handle_message(irc, text):
     msg_info = text[1:].split()
     user = msg_info[0].split("!")[0]
     channel = msg_info[2] if msg_info[2] != "kittykatbot" else user
-    message = ":".join(text[1:].split(":")[1:])
+    message = ":".join(text[1:].split(":")[1:]).strip()
   except:
     return
 
