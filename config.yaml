@@ -12,3 +12,6 @@ test:
 
 test_server:
   - 'irc.snoonet.org'
+
+botmaster:
+  - 'trogdorthedagron'
