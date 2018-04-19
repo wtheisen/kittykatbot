@@ -126,7 +126,7 @@ class KittyKatBot:
     while 'MODE' not in message:
       message = self.recieve()
 
-    #self.join(channel)
+    self.join(channel)
 
 
   def join(self, channel):
