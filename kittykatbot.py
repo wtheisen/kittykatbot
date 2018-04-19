@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 
 import glob
 import re
@@ -6,7 +6,7 @@ import socket
 import sys
 import yaml
 
-PING_RE     = re.compile(r'^PING (?P<payload>.*)')
+PING_RE     = re.compile(r'^PING :(?P<payload>.*)')
 CHANMSG_RE  = re.compile(r':(?P<nick>.*?)!\S+\s+?PRIVMSG\s+(?P<channel>#+[-\w]+)\s+:(?P<message>[^\n\r]+)')
 PRIVMSG_RE  = re.compile(r':(?P<nick>.*?)!\S+\s+?PRIVMSG\s+[^#][^:]+:(?P<message>[^\n\r]+)')
 
@@ -14,11 +14,11 @@ PRIVMSG_RE  = re.compile(r':(?P<nick>.*?)!\S+\s+?PRIVMSG\s+[^#][^:]+:(?P<message
 class KittyKatBot:
   def __init__(self):
     self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    self.modules_dir = "modules"
+    self.modules_dir = 'modules'
     self.commands = []
     self.modules = {}
 
-    channels, servers, nicks, botmaster = self.parse_config("config.yaml")
+    channels, servers, nicks, botmaster = self.parse_config('config.yaml')
 
     self.handlers    = [
       (PING_RE    , self.handle_ping),
@@ -27,7 +27,7 @@ class KittyKatBot:
     ]
 
     for server, channel in zip(servers, channels):
-      self.connect(server, channel, "kittykatbot")
+      self.connect(server, channel, 'kittykatbot')
 
     self.load_modules()
 
@@ -70,14 +70,14 @@ class KittyKatBot:
     for keyword in ['channels', 'server', 'nick']:
       if keyword not in config:
         is_error = True
-        print "please include '{}' in your config file"
+        print('please include <{}> in your config file')
   
     if '-test' in sys.argv and 'test' not in config:
       is_error = True
-      print "please include a testing channel if you want to test"
+      print("please include a testing channel if you want to test")
   
     if is_error:
-      print "exiting..."
+      print("exiting...")
       exit(1)
 
     channels = config['channels']
@@ -96,7 +96,8 @@ class KittyKatBot:
 
 
   def handle_ping(self, payload):
-    self.socket.send("PONG {}\n".format(payload))
+    print('sending back pong {}'.format(payload))
+    self.socket_send('PONG {}\n'.format(payload))
 
 
   def handle_message(self, nick, message, channel=None):
@@ -108,34 +109,39 @@ class KittyKatBot:
 
   def send(self, channel, nick, response):
     recipient = channel if channel else nick
-    self.socket.send('PRIVMSG {} {}\n'.format(recipient, response))
+    self.socket_send('PRIVMSG {} {}\n'.format(recipient, response))
+
+  def socket_send(self, string):
+    self.socket.send(string.encode('utf-8'))
 
 
   def connect(self, server, channel, nick):
-    print "connecting to {}".format(server)
+    print('connecting to {}'.format(server))
 
     self.socket.connect((server, 6667))
-    self.socket.send("USER {} {} {} {}\n".format(*4*[nick]))
-    self.socket.send("NICK {}\n".format(nick))
+    self.socket_send('USER {} {} {} {}\n'.format(*4*[nick]))
+    self.socket_send('NICK {}\n'.format(nick))
 
     message = self.recieve()
     while 'MODE' not in message:
       message = self.recieve()
 
-    self.join(channel)
+    #self.join(channel)
 
 
   def join(self, channel):
-    print "joining {}".format(channel)
-    print self.socket.send("JOIN {}\n".format(channel))
+    print('joining {}'.format(channel))
+    print(self.socket_send('JOIN {}\n'.format(channel)))
 
   def recieve(self):
-    message = self.socket.recv(2040)
+    message = self.socket.recv(2040).decode('utf-8')
 
-    for pattern, handler in self.handlers:
-      match = pattern.match(message)
-      if match:
-        handler(**match.groupdict())
+    for line in message.split('\n'):
+      print(line)
+      for pattern, handler in self.handlers:
+        match = pattern.match(line)
+        if match:
+          handler(**match.groupdict()) 
 
     return message
 
