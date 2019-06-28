@@ -65,17 +65,17 @@ class KittyKatBot:
     except:
       print('Error parsing {}'.format(filename))
       exit(1)
-    
+
     is_error = False
     for keyword in ['channels', 'server', 'nick']:
       if keyword not in config:
         is_error = True
         print('please include <{}> in your config file')
-  
+
     if '-test' in sys.argv and 'test' not in config:
       is_error = True
       print("please include a testing channel if you want to test")
-  
+
     if is_error:
       print("exiting...")
       exit(1)
@@ -141,7 +141,7 @@ class KittyKatBot:
       for pattern, handler in self.handlers:
         match = pattern.match(line)
         if match:
-          handler(**match.groupdict()) 
+          handler(**match.groupdict())
 
     return message
 
